@@ -25,8 +25,7 @@ namespace AspNet.Cache
                 (TimeSpanType.FromMilliseconds, TimeSpan.FromMilliseconds),
                 (TimeSpanType.FromDays, TimeSpan.FromDays),
                 (TimeSpanType.FromHours, TimeSpan.FromHours),
-                (TimeSpanType.FromSeconds, TimeSpan.FromSeconds),
-                (TimeSpanType.FromTicks, FromTicks)
+                (TimeSpanType.FromSeconds, TimeSpan.FromSeconds)
             };
 
         public string Folder { get; set; } = string.Empty;
@@ -67,12 +66,7 @@ namespace AspNet.Cache
         }
 
         private TimeSpan GetTimeSpan()
-        {
-            var time = _timeSpanTypeList.FirstOrDefault(x => x.TimeSpanType == TimeSpanType);
-            if (time.TimeSpanFrom == null)
-                throw new ArgumentException("Timespan not found");
-            return time.TimeSpanFrom.Invoke(ExpireAt);
-        }
+            => _timeSpanTypeList.FirstOrDefault(x => x.TimeSpanType == TimeSpanType).TimeSpanFrom.Invoke(ExpireAt);
 
         private static string GetStringSha256Hash(string text)
         {
@@ -84,7 +78,5 @@ namespace AspNet.Cache
             var hash = sha.ComputeHash(textData);
             return BitConverter.ToString(hash).Replace("-", string.Empty);
         }
-
-        public static TimeSpan FromTicks(double value) => TimeSpan.FromTicks((long)value);
     }
 }

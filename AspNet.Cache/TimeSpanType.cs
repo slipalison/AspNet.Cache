@@ -6,7 +6,6 @@
         FromMilliseconds,
         FromDays,
         FromHours,
-        FromSeconds,
-        FromTicks
+        FromSeconds
     }
 }
