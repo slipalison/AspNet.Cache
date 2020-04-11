@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -23,8 +24,9 @@ namespace AspNet.Cache.Test.WebServer
         }
 
         [HttpGet, Cache(Folder = "Test", SuccessStatus = System.Net.HttpStatusCode.Created, TimeSpanType = TimeSpanType.FromDays, ExpireAt = 12)]
-        public IEnumerable<WeatherForecast> Get([Required, FromHeader(Name = "X-Correlation-Id")] string correlationId)
+        public async Task<ActionResult<IEnumerable<WeatherForecast>>> Get([Required, FromHeader(Name = "X-Correlation-Id")] string correlationId)
         {
+            await Task.Delay(1000);
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
