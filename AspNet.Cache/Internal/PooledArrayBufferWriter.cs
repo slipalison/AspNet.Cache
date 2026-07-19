@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 
 namespace AspNet.Cache.Internal;
@@ -11,7 +11,6 @@ internal sealed class PooledArrayBufferWriter : IBufferWriter<byte>, IDisposable
     private const int DefaultInitialCapacity = 4096;
 
     private byte[] _buffer;
-    private int _written;
     private readonly int _softLimit;
 
     public PooledArrayBufferWriter(int softLimit = int.MaxValue, int initialCapacity = DefaultInitialCapacity)
@@ -21,38 +20,38 @@ internal sealed class PooledArrayBufferWriter : IBufferWriter<byte>, IDisposable
     }
 
     /// <summary>True when more than the configured soft limit has been written; the caller must discard the content.</summary>
-    public bool Overflowed => _written > _softLimit;
+    public bool Overflowed => WrittenCount > _softLimit;
 
-    public ReadOnlySpan<byte> WrittenSpan => _buffer.AsSpan(0, _written);
+    public ReadOnlySpan<byte> WrittenSpan => _buffer.AsSpan(0, WrittenCount);
 
-    public ReadOnlyMemory<byte> WrittenMemory => _buffer.AsMemory(0, _written);
+    public ReadOnlyMemory<byte> WrittenMemory => _buffer.AsMemory(0, WrittenCount);
 
-    public int WrittenCount => _written;
+    public int WrittenCount { get; private set; }
 
     public void Advance(int count)
     {
-        if (count < 0 || _written + count > _buffer.Length)
+        if (count < 0 || WrittenCount + count > _buffer.Length)
             throw new ArgumentOutOfRangeException(nameof(count));
-        _written += count;
+        WrittenCount += count;
     }
 
     public Memory<byte> GetMemory(int sizeHint = 0)
     {
         EnsureCapacity(sizeHint);
-        return _buffer.AsMemory(_written);
+        return _buffer.AsMemory(WrittenCount);
     }
 
     public Span<byte> GetSpan(int sizeHint = 0)
     {
         EnsureCapacity(sizeHint);
-        return _buffer.AsSpan(_written);
+        return _buffer.AsSpan(WrittenCount);
     }
 
     public void Dispose()
     {
         var buffer = _buffer;
         _buffer = Array.Empty<byte>();
-        _written = 0;
+        WrittenCount = 0;
         if (buffer.Length > 0)
             ArrayPool<byte>.Shared.Return(buffer);
     }
@@ -61,12 +60,12 @@ internal sealed class PooledArrayBufferWriter : IBufferWriter<byte>, IDisposable
     {
         if (sizeHint < 1)
             sizeHint = 1;
-        if (_buffer.Length - _written >= sizeHint)
+        if (_buffer.Length - WrittenCount >= sizeHint)
             return;
 
-        var newSize = Math.Max(_buffer.Length * 2, _written + sizeHint);
+        var newSize = Math.Max(_buffer.Length * 2, WrittenCount + sizeHint);
         var next = ArrayPool<byte>.Shared.Rent(newSize);
-        _buffer.AsSpan(0, _written).CopyTo(next);
+        _buffer.AsSpan(0, WrittenCount).CopyTo(next);
         var previous = _buffer;
         _buffer = next;
         ArrayPool<byte>.Shared.Return(previous);

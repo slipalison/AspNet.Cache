@@ -24,10 +24,10 @@ internal static class CacheKeyBuilder
         var prefixLength = folder.Length == 0 ? 0 : folder.Length + 1;
         var totalLength = prefixLength + pathSpan.Length + 1 + HexLength;
 
-        char[]? rented = totalLength <= StackallocCharThreshold
+        var rented = totalLength <= StackallocCharThreshold
             ? null
             : ArrayPool<char>.Shared.Rent(totalLength);
-        Span<char> destination = rented ?? stackalloc char[StackallocCharThreshold];
+        var destination = rented ?? stackalloc char[StackallocCharThreshold];
 
         var position = 0;
         if (prefixLength != 0)

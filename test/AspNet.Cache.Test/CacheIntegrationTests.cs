@@ -76,6 +76,8 @@ public sealed class CounterController : ControllerBase
 
     [HttpGet]
     [Cache(ExpireAt = 5, TimeSpanType = TimeSpanType.FromMinutes)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static",
+        Justification = "MVC action methods must be instance methods.")]
     public CounterPayload Get(int id)
     {
         Interlocked.Increment(ref _executions);
