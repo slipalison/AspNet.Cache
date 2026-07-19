@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: Restore
+        run: dotnet restore AspNet.Cache.sln
+
+      - name: Build
+        run: dotnet build AspNet.Cache.sln -c Release --no-restore -warnaserror /p:Version=${{ env.VERSION }}
+
+      - name: Test
+        run: dotnet test test/AspNet.Cache.Test/AspNet.Cache.Test.csproj -c Release --no-build
+
+      - name: Pack
+        run: >
+          dotnet pack AspNet.Cache/AspNet.Cache.csproj -c Release --no-build -o out
+          /p:Version=${{ env.VERSION }}
+          /p:ContinuousIntegrationBuild=true
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push "out/*.nupkg"
+          --api-key "${{ secrets.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" out/*.nupkg out/*.snupkg --generate-notes
