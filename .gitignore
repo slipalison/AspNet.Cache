@@ -263,3 +263,11 @@ __pycache__/
 /test/Core.Winchester.Tests/coverage.json
 /test/Core.Winchester.Tests/coverage.cobertura.xml
 *.info
+
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
+.claude 
+PLANO-MODERNIZACAO.md
+# Coverage reports
+coverage*.xml
+*.opencover.xml
