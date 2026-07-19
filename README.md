@@ -45,7 +45,8 @@ route + arguments are served straight from the cache — the action never execut
 dotnet add package AspNet.Cache
 ```
 
-Requires .NET 8.0+.
+Multi-targets **.NET 8.0, 9.0 and 10.0**. On net9.0+ the `IBufferDistributedCache` fast path is used
+automatically when the provider supports it.
 
 ## Quick start
 
@@ -134,7 +135,7 @@ per operation are deterministic, so regressions fail the build.
 
 | Change | Impact |
 |---|---|
-| Target framework `netstandard2.1` → `net8.0` | Apps must run .NET 8+ |
+| Target framework `netstandard2.1` → `net8.0`/`net9.0`/`net10.0` | Apps must run .NET 8+ |
 | Newtonsoft.Json → System.Text.Json | Serialization follows your MVC JSON options (camelCase by default) |
 | Key format internals changed | Existing cache entries miss once after upgrade (cache warms itself) |
 | `Cache-Control: max-age` | Now correct (`TotalSeconds`; v1 emitted the 0–59 component) |
@@ -188,7 +189,8 @@ mesmo path + argumentos são servidas direto do cache — a action nem executa.
 dotnet add package AspNet.Cache
 ```
 
-Requer .NET 8.0+.
+Multi-target **.NET 8.0, 9.0 e 10.0**. No net9.0+ o fast path `IBufferDistributedCache` é usado
+automaticamente quando o provider suporta.
 
 ## Início rápido
 

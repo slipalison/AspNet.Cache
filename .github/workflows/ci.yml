@@ -25,6 +25,7 @@ jobs:
           dotnet-version: |
             8.0.x
             9.0.x
+            10.0.x
 
       - name: Setup Java 17 (SonarScanner requirement)
         if: env.SONAR_TOKEN != ''
@@ -80,6 +81,7 @@ jobs:
           dotnet-version: |
             8.0.x
             9.0.x
+            10.0.x
 
       - name: Run benchmarks (short job)
         run: dotnet run -c Release --project benchmarks/AspNet.Cache.Benchmarks -- --filter "*CacheBenchmarks*" --job short --exporters json
