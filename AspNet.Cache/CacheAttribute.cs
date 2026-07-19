@@ -81,33 +81,32 @@ public sealed class CacheAttribute : ActionFilterAttribute
         IServiceProvider services, CancellationToken cancellationToken)
     {
         var buffer = new PooledArrayBufferWriter();
+        var handedOff = false;
         try
         {
             var found = await cache.TryGetAsync(key, buffer, cancellationToken).ConfigureAwait(false);
             if (!found || buffer.WrittenCount == 0)
-            {
-                buffer.Dispose();
                 return null;
-            }
 
             if (CachedJsonResult.IsEmptyMarker(buffer.WrittenSpan))
-            {
-                buffer.Dispose();
                 return new StatusCodeResult((int)SuccessStatus);
-            }
 
+            handedOff = true;
             return new PooledCachedJsonResult(buffer, (int)SuccessStatus);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            buffer.Dispose();
             throw;
         }
         catch (Exception exception)
         {
-            buffer.Dispose();
             CacheLog.GetFailed(ResolveLogger(services), exception);
             return null;
+        }
+        finally
+        {
+            if (!handedOff)
+                buffer.Dispose();
         }
     }
 
