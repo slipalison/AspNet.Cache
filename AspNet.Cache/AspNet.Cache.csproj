@@ -1,17 +1,42 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>AspNet.Cache</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>slipalison</Authors>
+    <Description>Declarative response caching for ASP.NET Core MVC actions on top of any IDistributedCache provider (Redis, SQL Server, in-memory, MongoDB). Allocation-conscious: span-based key generation, pooled buffers, IBufferDistributedCache fast path, LOH-free by default.</Description>
+    <PackageTags>aspnetcore;cache;caching;idistributedcache;redis;actionfilter;performance;response-cache</PackageTags>
     <PackageProjectUrl>https://github.com/slipalison/AspNet.Cache</PackageProjectUrl>
     <RepositoryUrl>https://github.com/slipalison/AspNet.Cache</RepositoryUrl>
-    <Version>1.0.0</Version>
-    <Authors>slipalison</Authors>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.3" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="9.0.*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+    <InternalsVisibleTo Include="AspNet.Cache.Test" />
+    <InternalsVisibleTo Include="AspNet.Cache.Benchmarks" />
+  </ItemGroup>
+
 </Project>
