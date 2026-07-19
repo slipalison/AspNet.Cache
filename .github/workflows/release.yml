@@ -11,6 +11,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: production   # matches the NuGet Trusted Publishing policy's Environment claim
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
