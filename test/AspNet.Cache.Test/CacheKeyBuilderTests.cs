@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using AspNet.Cache.Internal;
 using Shouldly;
 using Xunit;

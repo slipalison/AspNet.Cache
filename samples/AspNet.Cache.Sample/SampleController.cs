@@ -1,4 +1,4 @@
-using AspNet.Cache;
+﻿using AspNet.Cache;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AspNet.Cache.Sample;

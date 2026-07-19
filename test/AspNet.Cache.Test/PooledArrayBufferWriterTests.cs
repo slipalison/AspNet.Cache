@@ -1,4 +1,4 @@
-using AspNet.Cache.Internal;
+﻿using AspNet.Cache.Internal;
 using Shouldly;
 using Xunit;
 
